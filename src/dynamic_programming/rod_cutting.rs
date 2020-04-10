@@ -19,18 +19,17 @@ pub fn recursive_rod(prices: &[i32], n: i32) -> (Vec<i32>, i32) {
 }
 
 pub fn bottom_up_dynamic_rod(prices: &[i32], n: i32) -> (Vec<i32>, i32) {
-    let mut rods: Vec<(Vec<i32>, i32)> = Vec::new();
-    rods.push((Vec::new(), 0));
+    let mut rods = vec![(Vec::new(), 0)];
     let mut q;
     for j in 1..=n as usize{
         let mut v = Vec::new();
         q = -1;
-        for i in 1..=j {
-            let (vt, qt) = &rods[j - i];
-            if qt + prices[i-1] > q {
-                q = qt + prices[i-1];
+        for (i, value) in prices.iter().take(j).copied().enumerate() {
+            let (vt, qt) = &rods[j - i - 1];
+            if qt + value > q {
+                q = qt + value;
                 v = vt.clone();
-                v.push(i as i32);
+                v.push(i as i32 + 1);
             }
         }
         rods.push((v, q));
@@ -50,8 +49,8 @@ fn top_down_dynamic_rod_aux(prices: &[i32], n: i32,mut rods: &mut Vec<(Vec<i32>,
         return (Vec::new(), 0);
     }
     
-    if rods.last().unwrap().1 >= 0{
-        let t = rods.last().unwrap();
+    if rods[n as usize -1].1 >= 0{
+        let t = rods.get(n as usize - 1).unwrap();
         return (t.0.clone(), t.1);
     }
 
@@ -66,7 +65,8 @@ fn top_down_dynamic_rod_aux(prices: &[i32], n: i32,mut rods: &mut Vec<(Vec<i32>,
         }
         
     }
-    rods.last_mut().replace(&mut (v.clone(), q));
+    
+    rods[n as usize -1] = (v.clone(), q);
     (v, q)
 }
 
