@@ -1,4 +1,4 @@
-use std::cmp::max;
+#![allow(dead_code)]
 
 pub fn recursive_rod(prices: &[i32], n: i32) -> (Vec<i32>, i32) {
     let mut v = Vec::new();
@@ -15,7 +15,7 @@ pub fn recursive_rod(prices: &[i32], n: i32) -> (Vec<i32>, i32) {
             v.push(i as i32+ 1);
         }
     }
-    return (v, q);
+    (v, q)
 }
 
 pub fn bottom_up_dynamic_rod(prices: &[i32], n: i32) -> (Vec<i32>, i32) {
@@ -40,7 +40,7 @@ pub fn bottom_up_dynamic_rod(prices: &[i32], n: i32) -> (Vec<i32>, i32) {
 
 pub fn top_down_dynamic_rod(prices: &[i32], n: i32) -> (Vec<i32>, i32) {
     let mut rods = vec![(Vec::new(), -1); n as usize];
-    return top_down_dynamic_rod_aux(&prices, n, &mut rods);
+    top_down_dynamic_rod_aux(&prices, n, &mut rods)
 }
 
 fn top_down_dynamic_rod_aux(prices: &[i32], n: i32,mut rods: &mut Vec<(Vec<i32>, i32)>) -> (Vec<i32>, i32) {

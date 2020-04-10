@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::cell::{RefCell, Ref};
 use std::rc::Rc;
 
@@ -9,7 +10,7 @@ pub struct TreeNode<T> {
 impl<T> TreeNode<T> {
 
     pub fn new(val:T) -> Self {
-        TreeNode{val: val, children: Vec::new()}
+        TreeNode{val, children: Vec::new()}
     }
     pub fn next(&self, index: usize) -> Option<Rc<RefCell<TreeNode<T>>>> {
         if index >= self.children.len() {
@@ -52,7 +53,7 @@ impl<T> Tree<T> {
     }
     //return amount of children of headnode
     pub fn child_count(&self) -> usize {
-        return self.cursor.borrow().child_count();
+        self.cursor.borrow().child_count()
     }
     // push another child to the head node
     pub fn add_child(&mut self, value: T) {
