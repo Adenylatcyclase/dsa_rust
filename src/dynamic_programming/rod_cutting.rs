@@ -1,31 +1,31 @@
 use std::cmp::max;
 
-pub fn recursive_rod(prices: &Vec<i32>, n: i32) -> (Vec<i32>, i32) {
+pub fn recursive_rod(prices: &[i32], n: i32) -> (Vec<i32>, i32) {
     let mut v = Vec::new();
     if n == 0 {
         return (v, 0);
     }
     let mut q = -1;
     
-    for i in 0..n {
-        let (vt, qt) = recursive_rod(&prices, n - i -1);
-        if qt + &prices[i as usize] > q {
-            q = qt + &prices[i as usize];
+    for (i, value) in prices.iter().take(n as usize).copied().enumerate() {
+        let (vt, qt) = recursive_rod(&prices, n - i as i32 -1);
+        if qt + value > q {
+            q = qt +value;
             v = vt;
-            v.push(i + 1);
+            v.push(i as i32+ 1);
         }
     }
     return (v, q);
 }
 
-pub fn bottom_up_dynamic_rod(prices: &Vec<i32>, n: i32) -> (Vec<i32>, i32) {
+pub fn bottom_up_dynamic_rod(prices: &[i32], n: i32) -> (Vec<i32>, i32) {
     let mut rods: Vec<(Vec<i32>, i32)> = Vec::new();
     rods.push((Vec::new(), 0));
     let mut q;
-    for j in 1..n as usize+1{
+    for j in 1..=n as usize{
         let mut v = Vec::new();
         q = -1;
-        for i in 1..j+1 {
+        for i in 1..=j {
             let (vt, qt) = &rods[j - i];
             if qt + prices[i-1] > q {
                 q = qt + prices[i-1];
@@ -39,38 +39,34 @@ pub fn bottom_up_dynamic_rod(prices: &Vec<i32>, n: i32) -> (Vec<i32>, i32) {
     (t.0.clone(), t.1)
 }
 
-pub fn top_down_dynamic_rod(prices: &Vec<i32>, n: i32) -> (Vec<i32>, i32) {
-    let mut rods: Vec<(Vec<i32>, i32)> = Vec::new();
-    for _i in 0..n {
-        rods.push((Vec::new(),-1));
-    }
+pub fn top_down_dynamic_rod(prices: &[i32], n: i32) -> (Vec<i32>, i32) {
+    let mut rods = vec![(Vec::new(), -1); n as usize];
     return top_down_dynamic_rod_aux(&prices, n, &mut rods);
 }
 
-fn top_down_dynamic_rod_aux(prices: &Vec<i32>, n: i32,mut rods: &mut Vec<(Vec<i32>, i32)>) -> (Vec<i32>, i32) {
-    let k = n as usize;
+fn top_down_dynamic_rod_aux(prices: &[i32], n: i32,mut rods: &mut Vec<(Vec<i32>, i32)>) -> (Vec<i32>, i32) {
     let mut q;
     if n == 0 {
         return (Vec::new(), 0);
     }
     
-    if rods[k-1].1 >= 0{
-        let t = &rods[k-1];
+    if rods.last().unwrap().1 >= 0{
+        let t = rods.last().unwrap();
         return (t.0.clone(), t.1);
     }
 
     q = -1;
-    let mut v: Vec<i32>= Vec::new();
-    for i in 1..k+1 {
-        let (vt, qt) = top_down_dynamic_rod_aux(&prices, n - i as i32, &mut rods);
-        if qt + prices[i - 1] > q {
-            q = qt + prices[i - 1];
+    let mut v = Vec::new();
+    for (i, value) in prices.iter().take(n as usize).copied().enumerate() {
+        let (vt, qt) = top_down_dynamic_rod_aux(&prices, n - i as i32 - 1, &mut rods);
+        if qt + value > q {
+            q = qt + value;
             v = vt.clone();
-            v.push(i as i32);
+            v.push(i as i32 + 1);
         }
         
     }
-    rods[k-1] = (v.clone(), q);
+    rods.last_mut().replace(&mut (v.clone(), q));
     (v, q)
 }
 

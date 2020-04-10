@@ -42,10 +42,7 @@ impl<T> Tree<T> {
     //go to next node
     pub fn next(&mut self, index: usize) {
         let tmp = self.cursor.borrow().next(index);
-        match tmp {
-            Some(x) => self.cursor = x,
-            None => (),
-        }
+        if let Some(x) = tmp { self.cursor = x};//what
         self.depth += 1;
     }
     //reset cursor to head
